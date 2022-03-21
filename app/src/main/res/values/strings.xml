@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Loyalty Rewards</string>
+    <string name="rewards">Rewards</string>
+    <string name="need_more_points_title">Need more points?</string>
+    <string name="need_more_points_body">Share our app with others and get extra points!</string>
+    <string name="share_invite_code">Share invite code</string>
+    <string name="redeem_points_subtitle">Redeem points for exclusive rewards</string>
+    <string name="welcome_to_club">Welcome to the club!</string>
+    <string name="hi_user">Hi, %s</string>
+</resources>

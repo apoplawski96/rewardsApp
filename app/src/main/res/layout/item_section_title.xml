@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_section_title">
+
+        <TextView
+            android:id="@+id/userLoginTv"
+            style="@style/AppText.Header.L.Bold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/space_100"
+            android:layout_marginTop="@dimen/space_150"
+            android:text="@{title}"
+            app:layout_constraintEnd_toStartOf="@+id/cardIv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Hi, Katarzyna!" />
+
+        <TextView
+            android:id="@+id/greetingsTv"
+            style="@style/AppText.Body"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/space_100"
+            android:layout_marginTop="@dimen/space_12"
+            android:layout_marginBottom="@dimen/space_100"
+            android:text="@string/welcome_to_club"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/cardIv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/userLoginTv" />
+
+        <ImageView
+            android:id="@+id/cardIv"
+            android:layout_width="@dimen/icon_160"
+            android:layout_height="@dimen/icon_160"
+            android:layout_marginTop="@dimen/space_150"
+            android:layout_marginEnd="@dimen/space_100"
+            android:background="@drawable/background_card"
+            android:scaleType="center"
+            android:src="@drawable/ic_card"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

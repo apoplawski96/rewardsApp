@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="points"
+            type="Integer" />
+
+        <variable
+            name="isSynchronising"
+            type="Boolean" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/giftIv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/space_100"
+            android:layout_marginVertical="@dimen/space_12"
+            android:src="@drawable/ic_gift"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/pointsTv"
+            style="@style/AppText.Header.L.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/space_100"
+            app:points="@{points}"
+            app:layout_constraintBottom_toTopOf="@+id/pointsSubtitleTv"
+            app:layout_constraintStart_toEndOf="@+id/giftIv"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="1000 points" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/refreshProgress"
+            style="@style/Widget.MaterialComponents.CircularProgressIndicator.ExtraSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_50"
+            android:indeterminate="true"
+            app:isVisible="@{isSynchronising}"
+            app:indicatorColor="@color/accent"
+            app:layout_constraintBottom_toBottomOf="@+id/pointsTv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/pointsTv"
+            app:layout_constraintTop_toTopOf="@+id/pointsTv" />
+
+        <TextView
+            android:id="@+id/pointsSubtitleTv"
+            style="@style/AppText.Body.M"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/space_100"
+            android:layout_marginTop="@dimen/space_12"
+            android:text="@string/redeem_points_subtitle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/giftIv"
+            app:layout_constraintTop_toBottomOf="@+id/pointsTv"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

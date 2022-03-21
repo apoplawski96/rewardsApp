@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_100"
+        android:layout_marginTop="@dimen/space_50"
+        android:background="@drawable/background_banner"
+        android:padding="@dimen/space_150">
+
+        <TextView
+            android:id="@+id/titleTv"
+            style="@style/AppText.Header.L.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/need_more_points_title"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="24dp" />
+
+        <TextView
+            android:id="@+id/subtitleTv"
+            style="@style/AppText.Body.M.SemiBold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_100"
+            android:text="@string/need_more_points_body"
+            app:layout_constraintTop_toBottomOf="@+id/titleTv" />
+
+        <Button
+            android:id="@+id/inviteBtn"
+            style="@style/AppButton.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/share_btn_height"
+            android:layout_marginTop="@dimen/space_100"
+            android:text="@string/share_invite_code"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subtitleTv" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
