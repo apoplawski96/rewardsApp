@@ -34,7 +34,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.1.1"
+        kotlinCompilerExtensionVersion = "1.3.0-rc01"
     }
 }
 
@@ -43,6 +43,9 @@ dependencies {
     implementation(Dependencies.Koin.koinAndroid)
 
     implementation("io.coil-kt:coil-compose:2.2.2")
+
+    val accompanist = "0.26.5-rc"
+    implementation("com.google.accompanist:accompanist-insets:$accompanist")
 
 
     val ktorVersion = "1.6.4"

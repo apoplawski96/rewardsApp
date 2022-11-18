@@ -7,7 +7,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import com.futuremind.loyaltyrewards.view.screens.RewardLayout
-import com.futuremind.loyaltyrewards.view.theme.AppTheme
+import com.futuremind.loyaltyrewards.common.ui.theme.AppTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 

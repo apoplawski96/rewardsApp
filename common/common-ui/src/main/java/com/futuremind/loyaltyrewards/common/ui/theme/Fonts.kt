@@ -1,4 +1,4 @@
-package com.futuremind.loyaltyrewards.view.theme
+package com.futuremind.loyaltyrewards.common.ui.theme
 
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.text.TextStyle
@@ -7,7 +7,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.futuremind.loyaltyrewards.R
+import com.futuremind.loyaltyrewards.common.ui.R
 
 val fonts = FontFamily(
     Font(R.font.mont_regular),

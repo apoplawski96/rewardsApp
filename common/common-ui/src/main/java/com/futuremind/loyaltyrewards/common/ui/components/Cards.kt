@@ -1,4 +1,4 @@
-package com.futuremind.loyaltyrewards.view.components
+package com.futuremind.loyaltyrewards.common.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.futuremind.loyaltyrewards.view.theme.LocalColors
+import com.futuremind.loyaltyrewards.common.ui.theme.LocalColors
 
 @Composable
 fun ColoredCard(

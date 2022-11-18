@@ -1,4 +1,4 @@
-package com.futuremind.loyaltyrewards.view.components
+package com.futuremind.loyaltyrewards.common.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,9 +13,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.futuremind.loyaltyrewards.R
-import com.futuremind.loyaltyrewards.view.theme.LocalTypography
-import com.google.accompanist.insets.statusBarsPadding
+import com.futuremind.loyaltyrewards.common.ui.R
+import com.futuremind.loyaltyrewards.common.ui.theme.LocalTypography
 
 @Composable
 fun TopBar(

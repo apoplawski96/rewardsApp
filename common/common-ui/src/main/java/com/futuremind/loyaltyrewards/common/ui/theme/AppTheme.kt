@@ -1,4 +1,4 @@
-package com.futuremind.loyaltyrewards.view.theme
+package com.futuremind.loyaltyrewards.common.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
