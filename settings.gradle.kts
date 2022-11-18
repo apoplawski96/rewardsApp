@@ -1,5 +1,9 @@
 rootProject.name = "Loyalty Rewards"
-include(":app")
+include(
+    ":app",
+    ":common:common-util",
+    ":common:common-ui",
+)
 
 pluginManagement {
 

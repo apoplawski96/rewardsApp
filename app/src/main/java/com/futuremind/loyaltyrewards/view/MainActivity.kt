@@ -9,15 +9,16 @@ import androidx.core.view.WindowCompat
 import com.futuremind.loyaltyrewards.view.screens.RewardLayout
 import com.futuremind.loyaltyrewards.view.theme.AppTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import dagger.hilt.android.AndroidEntryPoint
 
 
-@AndroidEntryPoint
 class MainActivityCompose : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+
+
         setContent {
             val systemUiController = rememberSystemUiController()
             SideEffect {

@@ -1,8 +1,7 @@
 plugins {
-    kotlin("android") version "1.7.10"
-    kotlin("kapt") version "1.7.10"
-    id("com.android.application") version "7.3.0"
-    id("dagger.hilt.android.plugin") version "2.43.2"
+    id("com.android.application")
+    id("kotlin-android")
+    id("kotlinx-serialization")
     id("de.mannodermaus.android-junit5") version "1.8.0.0"
 }
 
@@ -56,8 +55,12 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines")
 
-    implementation("com.google.dagger:hilt-android:2.43.2")
-    kapt("com.google.dagger:hilt-compiler:2.43.2")
+    implementation(Dependencies.Koin.koinAndroid)
+    implementation(Dependencies.Koin.koinCore)
+    implementation(Dependencies.Koin.koinCompose)
+
+    implementation(project(":common:common-util"))
+    implementation(project(":common:common-ui"))
 
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit5")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5")
