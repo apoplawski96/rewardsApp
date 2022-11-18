@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.futuremind.loyaltyrewards.R
-import com.futuremind.loyaltyrewards.view.RewardsViewModel
+import com.futuremind.loyaltyrewards.view.screens.rewards.RewardsViewModel
 import com.futuremind.loyaltyrewards.common.ui.components.ButtonLarge
 import com.futuremind.loyaltyrewards.common.ui.components.ColoredCard
 import com.futuremind.loyaltyrewards.common.ui.components.IconButtonSmall
@@ -33,10 +33,11 @@ import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import org.koin.androidx.compose.getViewModel
 
 
 @Composable
-fun RewardLayout(viewModel: RewardsViewModel = viewModel()) {
+fun RewardLayout(viewModel: RewardsViewModel = getViewModel()) {
     val points by viewModel.loyaltyPointsFlow.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     RewardLayout(

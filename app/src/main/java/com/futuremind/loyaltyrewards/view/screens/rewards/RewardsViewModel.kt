@@ -1,8 +1,7 @@
-package com.futuremind.loyaltyrewards.view
+package com.futuremind.loyaltyrewards.view.screens.rewards
 
 import androidx.lifecycle.ViewModel
-import com.futuremind.loyaltyrewards.api.ApiReward
-import com.futuremind.loyaltyrewards.domain.Reward
+import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
