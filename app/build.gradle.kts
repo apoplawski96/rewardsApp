@@ -61,6 +61,8 @@ dependencies {
 
     implementation(project(":common:common-util"))
     implementation(project(":common:common-ui"))
+    implementation(project(":feature:feature-rewards-api"))
+    implementation(project(":feature:feature-rewards-dependency"))
 
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit5")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5")

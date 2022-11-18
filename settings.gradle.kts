@@ -3,6 +3,8 @@ include(
     ":app",
     ":common:common-util",
     ":common:common-ui",
+    ":feature:feature-rewards-api",
+    ":feature:feature-rewards-dependency",
 )
 
 pluginManagement {
