@@ -18,6 +18,8 @@ import com.futuremind.loyaltyrewards.common.ui.components.VerticalSpacer
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalTypography
 import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
 
+enum class RewardCardMode { ACTIVATED, AVAILABLE, UNAVAILABLE; }
+
 // Verify shape
 @Composable
 fun RewardCard(reward: Reward, onRewardClick: () -> Unit) {

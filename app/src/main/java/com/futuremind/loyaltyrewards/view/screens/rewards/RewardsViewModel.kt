@@ -46,7 +46,7 @@ class RewardsViewModel(
         viewModelScope.launch {
             setRewardActivationStatus(id = reward.id, count = 1)
 
-            getRewardsActivationStatus.get()
+            fetchDataFromApi()
         }
     }
 

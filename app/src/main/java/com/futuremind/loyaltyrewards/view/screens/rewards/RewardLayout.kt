@@ -91,7 +91,9 @@ private fun RewardsLayoutContent(
                         }
                     }
                     is RewardsViewModel.ViewState.Loading -> {
-                        CircularProgressIndicator()
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                        }
                     }
                     RewardsViewModel.ViewState.Error -> {
                         // TODO
