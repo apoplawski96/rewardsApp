@@ -32,8 +32,18 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
 
+    val errorSnackbarState = remember { SnackbarHostState() }
+
+
     LaunchedEffect(null) {
         viewModel.initialize()
+        viewModel.viewEvent.collect { event ->
+            when(event) {
+                RewardsViewModel.ViewEvent.Error -> {
+                    errorSnackbarState.showSnackbar("error kurwa")
+                }
+            }
+        }
     }
 
     val viewState by viewModel.viewState.collectAsState()
@@ -43,7 +53,8 @@ fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
         onRefresh = { viewModel.refresh() },
         viewState = viewState,
         isLoading = isLoading,
-        onRewardClick = { reward -> viewModel.onRewardClick(reward) }
+        onRewardClick = { reward -> viewModel.onRewardClick(reward) },
+        errorSnackbarState = errorSnackbarState,
     )
 }
 
@@ -53,9 +64,9 @@ private fun RewardsLayoutContent(
     viewState: RewardsViewModel.ViewState,
     isLoading: Boolean,
     onRewardClick: (Reward) -> Unit,
+    errorSnackbarState: SnackbarHostState,
 ) {
 
-    val errorSnackbarState = remember { SnackbarHostState() }
 
     val scrollState = rememberScrollState()
 
@@ -95,9 +106,11 @@ private fun RewardsLayoutContent(
                             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                         }
                     }
-                    RewardsViewModel.ViewState.Error -> {
-                        // TODO
-                    }
+//                    RewardsViewModel.ViewState.Error -> {
+//                        Button(onClick = { onRefresh() }) {
+//                            Text(text = "Retry")
+//                        }
+//                    }
                 }
             }
         }

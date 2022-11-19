@@ -15,7 +15,7 @@ internal class ApiRewardsConverter {
             name = apiReward.name,
             coverUrl = apiReward.coverUrl,
             pointsCost = apiReward.pointsCost,
-            activated = apiReward.isActivated(activationStatus)
+            activated = false
         )
     }
 

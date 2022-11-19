@@ -8,9 +8,11 @@ import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetRewardsActivatio
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetUserPoints
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.SetRewardActivationStatus
 import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,15 +27,21 @@ class RewardsViewModel(
 
     sealed interface ViewState {
         object Loading : ViewState
-        object Error : ViewState
         data class DataLoaded(
             val rewards: List<Reward>,
             val points: Int,
         ) : ViewState
     }
 
+    sealed interface ViewEvent {
+        object Error : ViewEvent
+    }
+
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(ViewState.Loading)
     val viewState = _viewState.asStateFlow()
+
+    private val _viewEvent: Channel<ViewEvent> = Channel()
+    val viewEvent = _viewEvent.receiveAsFlow()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
@@ -64,6 +72,7 @@ class RewardsViewModel(
             val getUserPointsResult = getUserPointsDeferred.await()
 
             if (getRewardsResult is GetRewards.Result.Success && getUserPointsResult is GetUserPoints.Result.Success) {
+                println("2137 - was success ")
                 _viewState.update {
                     ViewState.DataLoaded(
                         rewards = getRewardsResult.items,
@@ -71,9 +80,7 @@ class RewardsViewModel(
                     )
                 }
             } else {
-                _viewState.update {
-                    ViewState.Error
-                }
+                _viewEvent.send(ViewEvent.Error)
             }
         }
     }
