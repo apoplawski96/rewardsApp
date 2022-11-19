@@ -7,5 +7,5 @@ interface SetRewardActivationStatus {
         object Failure : Result
     }
 
-    suspend operator fun invoke(id: Int, count: Int) : Result
+    suspend operator fun invoke(id: Int) : Result
 }

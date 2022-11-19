@@ -7,8 +7,8 @@ internal class SetFmRewardActivationStatus(
     private val rewardsApi: RewardsApi,
 ) : SetRewardActivationStatus {
 
-    override suspend fun invoke(id: Int, count: Int): SetRewardActivationStatus.Result = try {
-        rewardsApi.changeRewardActivationStatus(rewardId = id, activationsCount = count)
+    override suspend fun invoke(id: Int): SetRewardActivationStatus.Result = try {
+        rewardsApi.changeRewardActivationStatus(rewardId = id, activationsCount = 1)
         SetRewardActivationStatus.Result.Success
     } catch (e: Exception) {
         SetRewardActivationStatus.Result.Failure
