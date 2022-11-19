@@ -17,10 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.futuremind.loyaltyrewards.R
-import com.futuremind.loyaltyrewards.common.ui.components.ButtonLarge
-import com.futuremind.loyaltyrewards.common.ui.components.ColoredCard
-import com.futuremind.loyaltyrewards.common.ui.components.IconButtonSmall
-import com.futuremind.loyaltyrewards.common.ui.components.TopBar
+import com.futuremind.loyaltyrewards.common.ui.components.*
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalColors
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalTypography
 import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
@@ -113,10 +110,14 @@ private fun RewardsLayoutContent(
 // TODO: Add keys
 @Composable
 private fun RewardsSection(rewards: List<Reward>) {
-    LazyRow {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item { HorizontalSpacer(width = 4.dp) }
         items(rewards) { reward ->
             RewardCard(reward = reward)
         }
+        item { HorizontalSpacer(width = 4.dp) }
     }
 }
 
