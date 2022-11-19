@@ -1,18 +1,14 @@
 package com.futuremind.loyaltyrewards.view.screens.rewards.components
 
 import androidx.annotation.PluralsRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.unit.dp
 import com.futuremind.loyaltyrewards.R
 import com.futuremind.loyaltyrewards.common.ui.components.AsyncImage
