@@ -34,6 +34,8 @@ android {
 
 dependencies {
 
+    implementation(files("libs/mockapi.jar"))
+
     implementation(Dependencies.Koin.koinAndroid)
     implementation(project(":feature:feature-rewards-api"))
 

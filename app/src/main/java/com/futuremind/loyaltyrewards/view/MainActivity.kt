@@ -6,9 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
-import com.futuremind.loyaltyrewards.view.screens.RewardLayout
+import com.futuremind.loyaltyrewards.view.screens.rewards.RewardsLayout
 import com.futuremind.loyaltyrewards.common.ui.theme.AppTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+
 
 
 class MainActivityCompose : ComponentActivity() {
@@ -27,8 +28,10 @@ class MainActivityCompose : ComponentActivity() {
                     darkIcons = true
                 )
             }
+
+//            val rewards = RewardsApi()
             AppTheme {
-                RewardLayout()
+                RewardsLayout()
             }
         }
     }

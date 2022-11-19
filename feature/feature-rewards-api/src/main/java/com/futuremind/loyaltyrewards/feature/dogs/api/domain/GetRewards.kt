@@ -9,5 +9,5 @@ interface GetRewards {
         object Failure : Result
     }
 
-    operator fun invoke()
+    suspend operator fun invoke() : Result
 }

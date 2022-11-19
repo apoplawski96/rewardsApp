@@ -1,34 +1,30 @@
-package com.futuremind.loyaltyrewards.view.screens
+package com.futuremind.loyaltyrewards.view.screens.rewards
 
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.futuremind.loyaltyrewards.R
-import com.futuremind.loyaltyrewards.view.screens.rewards.RewardsViewModel
 import com.futuremind.loyaltyrewards.common.ui.components.ButtonLarge
 import com.futuremind.loyaltyrewards.common.ui.components.ColoredCard
 import com.futuremind.loyaltyrewards.common.ui.components.IconButtonSmall
 import com.futuremind.loyaltyrewards.common.ui.components.TopBar
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalColors
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalTypography
+import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
+import com.futuremind.loyaltyrewards.view.screens.rewards.components.RewardCard
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -37,21 +33,27 @@ import org.koin.androidx.compose.getViewModel
 
 
 @Composable
-fun RewardLayout(viewModel: RewardsViewModel = getViewModel()) {
-    val points by viewModel.loyaltyPointsFlow.collectAsState()
+fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
+
+    LaunchedEffect(null) {
+        viewModel.initialize()
+    }
+
+    val viewState by viewModel.viewState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
-    RewardLayout(
-        points = points,
-        isLoading = isLoading,
-        onRefresh = { viewModel.refresh() }
+
+    RewardsLayoutContent(
+        onRefresh = { viewModel.refresh() },
+        viewState = viewState,
+        isLoading = isLoading
     )
 }
 
 @Composable
-private fun RewardLayout(
-    points: Int?,
+private fun RewardsLayoutContent(
+    onRefresh: () -> Unit,
+    viewState: RewardsViewModel.ViewState,
     isLoading: Boolean,
-    onRefresh: () -> Unit
 ) {
 
     val errorSnackbarState = remember { SnackbarHostState() }
@@ -65,22 +67,36 @@ private fun RewardLayout(
                 onBack = { /* not part of task */ }
             )
             SwipeRefresh(
-                state = rememberSwipeRefreshState(isLoading),
+                state = rememberSwipeRefreshState(isRefreshing = isLoading),
                 onRefresh = onRefresh,
             ) {
-                Column(
-                    modifier = Modifier
-                        .navigationBarsPadding()
-                        .background(LocalColors.current.gradientLight)
-                        .fillMaxSize()
-                        .verticalScroll(scrollState)
-                ) {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    GreetingRow("FM Candidate") //not part of task
-                    Spacer(modifier = Modifier.height(24.dp))
-                    PointsSection(points = points)
-                    Spacer(modifier = Modifier.height(24.dp))
-                    ShareCard()
+                when (viewState) {
+                    is RewardsViewModel.ViewState.DataLoaded -> {
+                        Column {
+                            Column(
+                                modifier = Modifier
+                                    .navigationBarsPadding()
+                                    .background(LocalColors.current.gradientLight)
+                                    .fillMaxSize()
+                                    .verticalScroll(scrollState)
+                            ) {
+                                Spacer(modifier = Modifier.height(24.dp))
+                                GreetingRow("FM Candidate") //not part of task
+                                Spacer(modifier = Modifier.height(24.dp))
+                                PointsSection(points = viewState.points)
+                                Spacer(modifier = Modifier.height(24.dp))
+                                RewardsSection(rewards = viewState.rewards)
+                                Spacer(modifier = Modifier.height(24.dp))
+                                ShareCard()
+                            }
+                        }
+                    }
+                    is RewardsViewModel.ViewState.Loading -> {
+                        CircularProgressIndicator()
+                    }
+                    RewardsViewModel.ViewState.Error -> {
+                        // TODO
+                    }
                 }
             }
         }
@@ -94,8 +110,18 @@ private fun RewardLayout(
 
 }
 
+// TODO: Add keys
 @Composable
-fun GreetingRow(userName: String) {
+private fun RewardsSection(rewards: List<Reward>) {
+    LazyRow {
+        items(rewards) { reward ->
+            RewardCard(reward = reward)
+        }
+    }
+}
+
+@Composable
+private fun GreetingRow(userName: String) {
     Row(
         modifier = Modifier.padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -118,7 +144,7 @@ fun GreetingRow(userName: String) {
 }
 
 @Composable
-fun PointsSection(
+private fun PointsSection(
     points: Int?
 ) {
 
