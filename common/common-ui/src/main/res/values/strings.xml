@@ -9,4 +9,8 @@
     <string name="redeem_points_subtitle">Redeem points for exclusive rewards</string>
     <string name="welcome_to_club">Welcome to the club!</string>
     <string name="hi_user">Hi, %s</string>
+    <plurals name="points">
+        <item quantity="one">"%d point"</item>
+        <item quantity="other">"%d points"</item>
+    </plurals>
 </resources>

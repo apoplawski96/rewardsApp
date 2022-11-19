@@ -114,9 +114,7 @@ private fun RewardsSection(rewards: List<Reward>) {
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item { HorizontalSpacer(width = 4.dp) }
-        items(rewards) { reward ->
-            RewardCard(reward = reward)
-        }
+        items(rewards) { reward -> RewardCard(reward = reward) }
         item { HorizontalSpacer(width = 4.dp) }
     }
 }

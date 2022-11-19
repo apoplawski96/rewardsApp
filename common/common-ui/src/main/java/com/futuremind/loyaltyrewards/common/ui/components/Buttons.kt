@@ -1,5 +1,6 @@
 package com.futuremind.loyaltyrewards.common.ui.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalColors
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalTypography
@@ -22,7 +24,7 @@ fun IconButtonSmall(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentDescription: String? = null
-){
+) {
     IconButton(
         onClick = onClick,
         modifier = Modifier
@@ -41,11 +43,33 @@ fun IconButtonSmall(
 }
 
 @Composable
+fun ButtonWithIcon(
+    label: String,
+    @DrawableRes iconResId: Int,
+    contentDescription: String?,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Icon(painter = painterResource(id = iconResId), contentDescription = contentDescription)
+        HorizontalSpacer(width = 8.dp)
+        Text(
+            text = label,
+            style = LocalTypography.current.HeaderM,
+            color = MaterialTheme.colors.onPrimary
+        )
+    }
+}
+
+@Composable
 fun ButtonLarge(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
-){
+) {
     Box(
         modifier = Modifier
             .height(40.dp)
