@@ -2,8 +2,11 @@ package com.futuremind.loyaltyrewards.view.screens.rewards
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.futuremind.loyaltyrewards.common.util.coroutines.DispatcherProvider
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetRewards
+import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetRewardsActivationStatus
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetUserPoints
+import com.futuremind.loyaltyrewards.feature.dogs.api.domain.SetRewardActivationStatus
 import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +18,9 @@ import kotlinx.coroutines.launch
 class RewardsViewModel(
     private val getRewards: GetRewards,
     private val getUserPoints: GetUserPoints,
+    private val setRewardActivationStatus: SetRewardActivationStatus,
+    private val getRewardsActivationStatus: GetRewardsActivationStatus,
+    private val dispatcherProvider: DispatcherProvider,
 ) : ViewModel() {
 
     sealed interface ViewState {
@@ -33,6 +39,22 @@ class RewardsViewModel(
     val isLoading = _isLoading.asStateFlow()
 
     fun initialize() {
+        fetchDataFromApi()
+    }
+
+    fun onRewardClick(reward: Reward) {
+        viewModelScope.launch {
+            setRewardActivationStatus(id = reward.id, count = 1)
+
+            getRewardsActivationStatus.get()
+        }
+    }
+
+    fun refresh() {
+        fetchDataFromApi()
+    }
+
+    private fun fetchDataFromApi() {
         viewModelScope.launch {
             val getRewardsDeferred = async { getRewards() }
             val getUserPointsDeferred = async { getUserPoints() }
@@ -53,9 +75,5 @@ class RewardsViewModel(
                 }
             }
         }
-    }
-
-    fun refresh() {
-        TODO()
     }
 }

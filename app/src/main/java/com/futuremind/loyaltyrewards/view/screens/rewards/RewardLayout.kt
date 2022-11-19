@@ -42,7 +42,8 @@ fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
     RewardsLayoutContent(
         onRefresh = { viewModel.refresh() },
         viewState = viewState,
-        isLoading = isLoading
+        isLoading = isLoading,
+        onRewardClick = { reward -> viewModel.onRewardClick(reward) }
     )
 }
 
@@ -51,6 +52,7 @@ private fun RewardsLayoutContent(
     onRefresh: () -> Unit,
     viewState: RewardsViewModel.ViewState,
     isLoading: Boolean,
+    onRewardClick: (Reward) -> Unit,
 ) {
 
     val errorSnackbarState = remember { SnackbarHostState() }
@@ -82,7 +84,7 @@ private fun RewardsLayoutContent(
                                 Spacer(modifier = Modifier.height(24.dp))
                                 PointsSection(points = viewState.points)
                                 Spacer(modifier = Modifier.height(24.dp))
-                                RewardsSection(rewards = viewState.rewards)
+                                RewardsSection(rewards = viewState.rewards, onRewardClick = onRewardClick)
                                 Spacer(modifier = Modifier.height(24.dp))
                                 ShareCard()
                             }
@@ -109,12 +111,22 @@ private fun RewardsLayoutContent(
 
 // TODO: Add keys
 @Composable
-private fun RewardsSection(rewards: List<Reward>) {
+private fun RewardsSection(
+    rewards: List<Reward>,
+    onRewardClick: (Reward) -> Unit,
+) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item { HorizontalSpacer(width = 4.dp) }
-        items(rewards) { reward -> RewardCard(reward = reward) }
+        items(rewards) { reward ->
+            RewardCard(
+                reward = reward,
+                onRewardClick = {
+                    onRewardClick(reward)
+                }
+            )
+        }
         item { HorizontalSpacer(width = 4.dp) }
     }
 }

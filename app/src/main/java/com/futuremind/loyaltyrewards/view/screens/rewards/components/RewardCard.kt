@@ -1,6 +1,7 @@
 package com.futuremind.loyaltyrewards.view.screens.rewards.components
 
 import androidx.annotation.PluralsRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -19,7 +20,7 @@ import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
 
 // Verify shape
 @Composable
-fun RewardCard(reward: Reward) {
+fun RewardCard(reward: Reward, onRewardClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(size = 8.dp),
         modifier = Modifier.size(height = 256.dp, width = 196.dp),
@@ -27,11 +28,17 @@ fun RewardCard(reward: Reward) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable { onRewardClick() },
         ) {
             RewardImage(url = reward.coverUrl, modifier = Modifier.weight(2f))
             VerticalSpacer(height = 16.dp)
-            RewardInfoSection(reward = reward, onButtonClick = { }, modifier = Modifier.weight(1f))
+            RewardInfoSection(
+                reward = reward,
+                onButtonClick = { onRewardClick() },
+                modifier = Modifier.weight(1f),
+            )
             VerticalSpacer(height = 16.dp)
         }
     }
