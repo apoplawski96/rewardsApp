@@ -7,6 +7,7 @@ import com.futuremind.loyaltyrewards.common.util.coroutines.DispatcherProvider
 import com.futuremind.loyaltyrewards.common.util.logger.DebugLogger
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.SwitchRewardActivationStatus
 import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
+import com.futuremind.loyaltyrewards.feature.dogs.api.model.error.RewardsApiErrorCause
 import kotlinx.coroutines.withContext
 
 private const val LOGGER_TAG = "SwitchFmRewardActivationStatus"
@@ -35,16 +36,16 @@ internal class SwitchFmRewardActivationStatus(
     } catch (e: MockHttpException) {
         debugLogger.log(LOGGER_TAG) { "Failed with exception: $e." }
 
-        SwitchRewardActivationStatus.Result.Failure
+        SwitchRewardActivationStatus.Result.Failure(cause = RewardsApiErrorCause.INVALID_REQUEST)
     }
     catch (e: MockIoException) {
         debugLogger.log(LOGGER_TAG) { "Failed with exception: $e." }
 
-        SwitchRewardActivationStatus.Result.Failure
+        SwitchRewardActivationStatus.Result.Failure(cause = RewardsApiErrorCause.IO_EXCEPTION)
     }
     catch (e: Exception) {
         debugLogger.log(LOGGER_TAG) { "Failed with exception: $e." }
 
-        SwitchRewardActivationStatus.Result.Failure
+        SwitchRewardActivationStatus.Result.Failure(cause = RewardsApiErrorCause.UNKNOWN)
     }
 }

@@ -1,9 +1,12 @@
 package com.futuremind.loyaltyrewards.feature.dogs.dependency.domain.usecase
 
+import com.futuremind.loyaltyrewards.api.MockHttpException
+import com.futuremind.loyaltyrewards.api.MockIoException
 import com.futuremind.loyaltyrewards.api.RewardsApi
 import com.futuremind.loyaltyrewards.common.util.coroutines.DispatcherProvider
 import com.futuremind.loyaltyrewards.common.util.logger.DebugLogger
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetRewards
+import com.futuremind.loyaltyrewards.feature.dogs.api.model.error.RewardsApiErrorCause
 import com.futuremind.loyaltyrewards.feature.dogs.dependency.domain.converter.ApiRewardsConverter
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -37,9 +40,17 @@ internal class GetFmRewards(
 
             GetRewards.Result.Success(items = result)
         }
+    } catch (e: MockHttpException) {
+        debugLogger.log(LOGGER_TAG) { "Failed with exception: $e." }
+
+        GetRewards.Result.Failure(cause = RewardsApiErrorCause.INVALID_REQUEST)
+    } catch (e: MockIoException) {
+        debugLogger.log(LOGGER_TAG) { "Failed with exception: $e." }
+
+        GetRewards.Result.Failure(cause = RewardsApiErrorCause.IO_EXCEPTION)
     } catch (e: Exception) {
         debugLogger.log(LOGGER_TAG) { "Failed with exception: $e." }
 
-        GetRewards.Result.Failure
+        GetRewards.Result.Failure(cause = RewardsApiErrorCause.UNKNOWN)
     }
 }

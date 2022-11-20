@@ -72,10 +72,10 @@ class RewardsViewModel(
             _isProcessing.update { true }
 
             when (switchRewardActivationStatus(reward = reward)) {
-                SwitchRewardActivationStatus.Result.Success -> {
+                is SwitchRewardActivationStatus.Result.Success -> {
                     fetchDataFromApi(onFailure = { setErrorEvent() })
                 }
-                SwitchRewardActivationStatus.Result.Failure -> {
+                is SwitchRewardActivationStatus.Result.Failure -> {
                     _viewEvent.send(ViewEvent.Error)
                 }
             }
