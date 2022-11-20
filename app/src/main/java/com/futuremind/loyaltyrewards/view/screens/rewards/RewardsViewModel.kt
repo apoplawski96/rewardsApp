@@ -3,14 +3,12 @@ package com.futuremind.loyaltyrewards.view.screens.rewards
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.futuremind.loyaltyrewards.common.ui.model.LoadingState
-import com.futuremind.loyaltyrewards.common.util.coroutines.DispatcherProvider
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetRewards
-import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetRewardsActivationStatus
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetUserPoints
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.SwitchRewardActivationStatus
 import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -55,8 +53,14 @@ class RewardsViewModel(
 
     fun initialize() {
         if (isInitialized.compareAndSet(false, true)) {
-            fetchDataFromApi(initialization = true)
+            fetchDataFromApi(onFailure = { setInitErrorState() })
         }
+    }
+
+    fun retryInitialize() {
+        _viewState.update { ViewState.Loading }
+
+        fetchDataFromApi(onFailure = { setInitErrorState() })
     }
 
     fun onRewardClick(reward: Reward) {
@@ -68,9 +72,9 @@ class RewardsViewModel(
 
             _isProcessing.update { true }
 
-            when(switchRewardActivationStatus(reward = reward)) {
+            when (switchRewardActivationStatus(reward = reward)) {
                 SwitchRewardActivationStatus.Result.Success -> {
-                    fetchDataFromApi(initialization = false)
+                    fetchDataFromApi(onFailure = { setErrorEvent() })
                 }
                 SwitchRewardActivationStatus.Result.Failure -> {
                     _viewEvent.send(ViewEvent.Error)
@@ -84,13 +88,11 @@ class RewardsViewModel(
 
     fun refresh() {
         _isRefreshing.update { true }
-        fetchDataFromApi(initialization = false)
+        fetchDataFromApi(onFailure = { setErrorEvent() })
     }
 
-    private fun fetchDataFromApi(initialization: Boolean) {
+    private fun fetchDataFromApi(onFailure: () -> Unit) {
         viewModelScope.launch {
-            _isProcessing.update { true }
-
             val getRewardsDeferred = async { getRewards() }
             val getUserPointsDeferred = async { getUserPoints() }
 
@@ -111,12 +113,16 @@ class RewardsViewModel(
                 _isProcessing.update { false }
                 _isRefreshing.update { false }
 
-                if (initialization) {
-                    _viewState.update { ViewState.InitializationError }
-                } else {
-                    _viewEvent.send(ViewEvent.Error)
-                }
+                onFailure()
             }
         }
+    }
+
+    private fun setErrorEvent() {
+        viewModelScope.launch { _viewEvent.send(ViewEvent.Error) }
+    }
+
+    private fun setInitErrorState() {
+        _viewState.value = ViewState.InitializationError
     }
 }

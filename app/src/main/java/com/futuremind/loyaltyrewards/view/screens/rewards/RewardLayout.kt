@@ -65,21 +65,25 @@ fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
             viewModel.refresh()
         },
         onRewardClick = { reward ->
-            executeIfNotCurrentlyProcessing(state = viewState) {
+            executeIfNotCurrentlyProcessing(isProcessing) {
                 viewModel.onRewardClick(reward)
             }
         },
+        onRetryInitialize = {
+            viewModel.retryInitialize()
+        }
     )
 }
 
 @Composable
 private fun RewardsLayoutContent(
-    onRefresh: () -> Unit,
     viewState: RewardsViewModel.ViewState,
+    errorSnackbarState: SnackbarHostState,
+    onRefresh: () -> Unit,
+    onRetryInitialize: () -> Unit,
+    onRewardClick: (Reward) -> Unit,
     isProcessing: Boolean,
     isRefreshing: Boolean,
-    onRewardClick: (Reward) -> Unit,
-    errorSnackbarState: SnackbarHostState,
 ) {
     val scrollState = rememberScrollState()
 
@@ -143,7 +147,7 @@ private fun RewardsLayoutContent(
                                     style = LocalTypography.current.BodyL,
                                 )
                                 VerticalSpacer(height = 16.dp)
-                                Button(onClick = { onRefresh() }) {
+                                Button(onClick = onRetryInitialize) {
                                     Text(text = "Retry")
                                 }
                             }
@@ -265,11 +269,12 @@ fun ShareCard() {
     }
 }
 
+// TODO: check!!
 private fun executeIfNotCurrentlyProcessing(
-    state: RewardsViewModel.ViewState,
+    isProcessing: Boolean,
     block: () -> Unit
 ) {
-    if (state !is LoadingState) {
+    if (isProcessing.not()) {
         block()
     }
 }
