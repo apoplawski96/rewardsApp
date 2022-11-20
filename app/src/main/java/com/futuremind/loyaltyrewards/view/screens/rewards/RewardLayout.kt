@@ -132,18 +132,23 @@ private fun RewardsLayoutContent(
                         }
                     }
                     RewardsViewModel.ViewState.InitializationError -> {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.something_went_wrong),
-                                style = LocalTypography.current.BodyL,
-                            )
-                            VerticalSpacer(height = 16.dp)
-                            Button(onClick = { onRefresh() }) {
-                                Text(text = "Retry")
+                        Box {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .verticalScroll(scrollState),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+
+                                ) {
+                                Text(
+                                    text = stringResource(id = R.string.something_went_wrong),
+                                    style = LocalTypography.current.BodyL,
+                                )
+                                VerticalSpacer(height = 16.dp)
+                                Button(onClick = { onRefresh() }) {
+                                    Text(text = "Retry")
+                                }
                             }
                         }
                     }
