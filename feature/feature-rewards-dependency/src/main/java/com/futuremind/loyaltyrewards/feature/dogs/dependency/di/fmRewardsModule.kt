@@ -2,7 +2,6 @@ package com.futuremind.loyaltyrewards.feature.dogs.dependency.di
 
 import com.futuremind.loyaltyrewards.api.RewardsApi
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetRewards
-import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetRewardsActivationStatus
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetUserPoints
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.SwitchRewardActivationStatus
 import com.futuremind.loyaltyrewards.feature.dogs.dependency.domain.GetFmRewards
