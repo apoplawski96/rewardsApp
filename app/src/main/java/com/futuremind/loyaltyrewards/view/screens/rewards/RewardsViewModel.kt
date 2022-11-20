@@ -7,7 +7,7 @@ import com.futuremind.loyaltyrewards.common.util.coroutines.DispatcherProvider
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetRewards
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetRewardsActivationStatus
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetUserPoints
-import com.futuremind.loyaltyrewards.feature.dogs.api.domain.SetRewardActivationStatus
+import com.futuremind.loyaltyrewards.feature.dogs.api.domain.SwitchRewardActivationStatus
 import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.async
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 class RewardsViewModel(
     private val getRewards: GetRewards,
     private val getUserPoints: GetUserPoints,
-    private val setRewardActivationStatus: SetRewardActivationStatus,
+    private val switchRewardActivationStatus: SwitchRewardActivationStatus,
     private val getRewardsActivationStatus: GetRewardsActivationStatus,
     private val dispatcherProvider: DispatcherProvider,
 ) : ViewModel() {
@@ -57,7 +57,7 @@ class RewardsViewModel(
     fun onRewardClick(reward: Reward) {
         viewModelScope.launch {
             _isLoading.update { true }
-            setRewardActivationStatus(id = reward.id)
+            switchRewardActivationStatus(reward = reward)
 
             fetchDataFromApi(initialization = false)
             _isLoading.update { false }
