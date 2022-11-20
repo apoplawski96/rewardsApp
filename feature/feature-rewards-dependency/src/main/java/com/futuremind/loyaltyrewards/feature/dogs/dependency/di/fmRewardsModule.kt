@@ -13,9 +13,9 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val fmRewardsModule = module {
+    factoryOf(::RewardsApi)
+    factoryOf(::ApiRewardsConverter)
     factoryOf(::GetFmRewards) bind GetRewards::class
     factoryOf(::GetFmUserPoints) bind GetUserPoints::class
     factoryOf(::SwitchFmRewardActivationStatus) bind SwitchRewardActivationStatus::class
-    factoryOf(::RewardsApi)
-    factoryOf(::ApiRewardsConverter)
 }
