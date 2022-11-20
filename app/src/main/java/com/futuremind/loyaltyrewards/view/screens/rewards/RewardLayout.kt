@@ -35,31 +35,43 @@ fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
 
     val errorSnackbarState = remember { SnackbarHostState() }
 
+    val viewState by viewModel.viewState.collectAsState()
+    val isProcessing by viewModel.isProcessing.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+
+    val errorMessage = stringResource(id = R.string.something_went_wrong)
+    val notEnoughPointsMessage = stringResource(id = R.string.not_enough_points)
+
+    println("2137 - isRefreshing: $isRefreshing")
+
     LaunchedEffect(null) {
         viewModel.initialize()
         viewModel.viewEvent.collect { event ->
             when (event) {
                 RewardsViewModel.ViewEvent.Error -> {
-                    errorSnackbarState.showSnackbar("error kurwa")
+                    errorSnackbarState.showSnackbar(errorMessage)
+                }
+                RewardsViewModel.ViewEvent.NoPointsAvailable -> {
+                    errorSnackbarState.showSnackbar(notEnoughPointsMessage)
                 }
             }
         }
     }
 
-    val viewState by viewModel.viewState.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-
-
     RewardsLayoutContent(
-        onRefresh = { viewModel.refresh() },
         viewState = viewState,
-        isLoading = isLoading,
+        isProcessing = isProcessing,
+        errorSnackbarState = errorSnackbarState,
+        isRefreshing = isRefreshing,
+        onRefresh = {
+            println("2137 - refresh")
+            viewModel.refresh()
+        },
         onRewardClick = { reward ->
             executeIfNotCurrentlyProcessing(state = viewState) {
                 viewModel.onRewardClick(reward)
             }
         },
-        errorSnackbarState = errorSnackbarState,
     )
 }
 
@@ -67,12 +79,11 @@ fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
 private fun RewardsLayoutContent(
     onRefresh: () -> Unit,
     viewState: RewardsViewModel.ViewState,
-    isLoading: Boolean,
+    isProcessing: Boolean,
+    isRefreshing: Boolean,
     onRewardClick: (Reward) -> Unit,
     errorSnackbarState: SnackbarHostState,
 ) {
-
-
     val scrollState = rememberScrollState()
 
     Box {
@@ -82,14 +93,12 @@ private fun RewardsLayoutContent(
                 onBack = { /* not part of task */ }
             )
             SwipeRefresh(
-                state = rememberSwipeRefreshState(isRefreshing = isLoading),
+                state = rememberSwipeRefreshState(isRefreshing = isRefreshing),
                 onRefresh = onRefresh,
             ) {
                 when (viewState) {
                     is RewardsViewModel.ViewState.DataLoaded -> {
-                        println("2137 - VIEW STATE: ${viewState.rewards}")
-
-                        Column {
+                        Box {
                             Column(
                                 modifier = Modifier
                                     .navigationBarsPadding()
@@ -104,11 +113,17 @@ private fun RewardsLayoutContent(
                                 Spacer(modifier = Modifier.height(24.dp))
                                 RewardsSection(
                                     rewards = viewState.rewards,
-                                    onRewardClick = onRewardClick
+                                    onRewardClick = onRewardClick,
+                                    clickActive = !isProcessing
                                 )
                                 Spacer(modifier = Modifier.height(24.dp))
                                 ShareCard()
                             }
+                            if (isProcessing) CircularProgressIndicator(
+                                modifier = Modifier.align(
+                                    Alignment.Center
+                                )
+                            )
                         }
                     }
                     is RewardsViewModel.ViewState.Loading -> {
@@ -116,14 +131,18 @@ private fun RewardsLayoutContent(
                             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                         }
                     }
-//                    RewardsViewModel.ViewState.Error -> {
-//                        Button(onClick = { onRefresh() }) {
-//                            Text(text = "Retry")
-//                        }
-//                    }
                     RewardsViewModel.ViewState.InitializationError -> {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            Button(onClick = { onRefresh() }, modifier = Modifier.align(Alignment.Center)) {
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.something_went_wrong),
+                                style = LocalTypography.current.BodyL,
+                            )
+                            VerticalSpacer(height = 16.dp)
+                            Button(onClick = { onRefresh() }) {
                                 Text(text = "Retry")
                             }
                         }
@@ -139,7 +158,6 @@ private fun RewardsLayoutContent(
                 .padding(bottom = 48.dp)
         )
     }
-
 }
 
 // TODO: Add keys
@@ -147,6 +165,7 @@ private fun RewardsLayoutContent(
 private fun RewardsSection(
     rewards: List<Reward>,
     onRewardClick: (Reward) -> Unit,
+    clickActive: Boolean,
 ) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -155,9 +174,8 @@ private fun RewardsSection(
         items(rewards) { reward ->
             RewardCard(
                 reward = reward,
-                onRewardClick = {
-                    onRewardClick(reward)
-                }
+                onRewardClick = { onRewardClick(reward) },
+                clickActive = clickActive
             )
         }
         item { HorizontalSpacer(width = 4.dp) }

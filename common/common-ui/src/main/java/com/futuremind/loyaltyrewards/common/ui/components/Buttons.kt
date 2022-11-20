@@ -12,9 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalColors
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalTypography
@@ -75,7 +73,7 @@ fun GradientButtonWithIcon(
     @DrawableRes iconResId: Int,
     contentDescription: String?,
     buttonBackground: Brush,
-    isClickEnabled: Boolean = true,
+    isProcessing: Boolean = true,
 ) {
     Row(
         modifier = Modifier
@@ -84,7 +82,7 @@ fun GradientButtonWithIcon(
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clip(MaterialTheme.shapes.large)
             .background(brush = buttonBackground)
-            .clickable { if (isClickEnabled) onClick() },
+            .clickable { if (isProcessing.not()) onClick() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {

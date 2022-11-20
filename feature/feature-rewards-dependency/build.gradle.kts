@@ -38,6 +38,7 @@ dependencies {
 
     implementation(Dependencies.Koin.koinAndroid)
     implementation(project(":feature:feature-rewards-api"))
+    implementation(project(":common:common-util"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 

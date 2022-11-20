@@ -9,21 +9,26 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.futuremind.loyaltyrewards.R
-import com.futuremind.loyaltyrewards.common.ui.components.*
+import com.futuremind.loyaltyrewards.common.ui.components.AsyncImage
+import com.futuremind.loyaltyrewards.common.ui.components.GradientButtonWithIcon
+import com.futuremind.loyaltyrewards.common.ui.components.VerticalSpacer
 import com.futuremind.loyaltyrewards.common.ui.theme.AppColors
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalTypography
 import com.futuremind.loyaltyrewards.common.ui.theme.Palette
 import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
 
-enum class RewardCardMode { ACTIVATED, AVAILABLE, UNAVAILABLE; }
-
-// Verify shape
 @Composable
-fun RewardCard(reward: Reward, onRewardClick: () -> Unit) {
+fun RewardCard(
+    reward: Reward,
+    onRewardClick: () -> Unit,
+    clickActive: Boolean,
+) {
     Card(
         shape = RoundedCornerShape(size = 8.dp),
         modifier = Modifier.size(height = 256.dp, width = 196.dp),
@@ -33,14 +38,20 @@ fun RewardCard(reward: Reward, onRewardClick: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .clickable { onRewardClick() },
+                .clickable { if (clickActive) onRewardClick() },
         ) {
-            RewardImage(url = reward.coverUrl, modifier = Modifier.weight(2f))
+            RewardImage(
+                url = reward.coverUrl,
+                modifier = Modifier
+                    .weight(2f)
+                    .blur(getImageBlur(reward.state))
+            )
             VerticalSpacer(height = 16.dp)
             RewardBottomSection(
                 reward = reward,
-                onButtonClick = { onRewardClick() },
                 modifier = Modifier.weight(1f),
+                onButtonClick = { onRewardClick() },
+                buttonActive = clickActive,
             )
             VerticalSpacer(height = 16.dp)
         }
@@ -63,6 +74,7 @@ private fun RewardImage(
 private fun RewardBottomSection(
     reward: Reward,
     onButtonClick: () -> Unit,
+    buttonActive: Boolean,
     modifier: Modifier = Modifier,
 ) {
     // TODO: Add remember?
@@ -90,6 +102,11 @@ private fun RewardBottomSection(
         Reward.State.ACTIVATED -> R.drawable.ic_check
     }
 
+    val textColor = when (reward.state) {
+        Reward.State.AVAILABLE, Reward.State.ACTIVATED -> Palette.black
+        Reward.State.UNAVAILABLE -> Palette.grayLight
+    }
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -97,7 +114,8 @@ private fun RewardBottomSection(
     ) {
         Text(
             text = reward.name,
-            style = LocalTypography.current.HeaderM // TODO update
+            style = LocalTypography.current.HeaderM, // TODO update,
+            color = textColor
         )
         VerticalSpacer(height = 8.dp)
         GradientButtonWithIcon(
@@ -105,7 +123,8 @@ private fun RewardBottomSection(
             iconResId = buttonIcon,
             contentDescription = "Reward item",
             onClick = { onButtonClick() },
-            buttonBackground = buttonBackground
+            buttonBackground = buttonBackground,
+            isProcessing = !buttonActive,
         )
     }
 }
@@ -118,4 +137,11 @@ private fun getPluralString(
     val resources = LocalContext.current.resources
     return resources.getQuantityString(id, count, count)
 }
+
+private fun getImageBlur(rewardState: Reward.State): Dp =
+    if (rewardState == Reward.State.UNAVAILABLE) {
+        4.dp
+    } else {
+        0.dp
+    }
 

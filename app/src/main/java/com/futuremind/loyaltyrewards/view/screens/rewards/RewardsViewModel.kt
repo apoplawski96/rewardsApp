@@ -16,15 +16,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 class RewardsViewModel(
     private val getRewards: GetRewards,
     private val getUserPoints: GetUserPoints,
     private val switchRewardActivationStatus: SwitchRewardActivationStatus,
-    private val getRewardsActivationStatus: GetRewardsActivationStatus,
     private val dispatcherProvider: DispatcherProvider,
 ) : ViewModel() {
 
@@ -39,6 +37,7 @@ class RewardsViewModel(
 
     sealed interface ViewEvent {
         object Error : ViewEvent
+        object NoPointsAvailable : ViewEvent
     }
 
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(ViewState.Loading)
@@ -47,30 +46,45 @@ class RewardsViewModel(
     private val _viewEvent: Channel<ViewEvent> = Channel()
     val viewEvent = _viewEvent.receiveAsFlow()
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading = _isLoading.asStateFlow()
+    private val _isProcessing = MutableStateFlow(false)
+    val isProcessing = _isProcessing.asStateFlow()
+
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
+    private val isInitialized = AtomicBoolean(false)
 
     fun initialize() {
-        fetchDataFromApi(initialization = true)
+        if (isInitialized.compareAndSet(false, true)) {
+            fetchDataFromApi(initialization = true)
+        }
     }
 
     fun onRewardClick(reward: Reward) {
         viewModelScope.launch {
-            _isLoading.update { true }
+            if (reward.state == Reward.State.UNAVAILABLE) {
+                _viewEvent.send(ViewEvent.NoPointsAvailable)
+                return@launch
+            }
+
+            _isProcessing.update { true }
             switchRewardActivationStatus(reward = reward)
 
             fetchDataFromApi(initialization = false)
-            _isLoading.update { false }
+
+            _isProcessing.update { false }
+            _isRefreshing.update { false }
         }
     }
 
     fun refresh() {
+        _isRefreshing.update { true }
         fetchDataFromApi(initialization = false)
     }
 
     private fun fetchDataFromApi(initialization: Boolean) {
         viewModelScope.launch {
-            _isLoading.update { true }
+            _isProcessing.update { true }
 
             val getRewardsDeferred = async { getRewards() }
             val getUserPointsDeferred = async { getUserPoints() }
@@ -80,14 +94,17 @@ class RewardsViewModel(
 
             if (getRewardsResult is GetRewards.Result.Success && getUserPointsResult is GetUserPoints.Result.Success) {
                 _viewState.update {
-                    _isLoading.update { false }
+                    _isProcessing.update { false }
+                    _isRefreshing.update { false }
+
                     ViewState.DataLoaded(
                         rewards = getRewardsResult.items,
                         points = getUserPointsResult.points
                     )
                 }
             } else {
-                _isLoading.update { false }
+                _isProcessing.update { false }
+                _isRefreshing.update { false }
 
                 if (initialization) {
                     _viewState.update { ViewState.InitializationError }
