@@ -1,7 +1,6 @@
 package com.futuremind.loyaltyrewards.view.screens.rewards.components
 
 import androidx.annotation.PluralsRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,14 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.futuremind.loyaltyrewards.R
-import com.futuremind.loyaltyrewards.common.ui.components.AsyncImage
-import com.futuremind.loyaltyrewards.common.ui.components.ButtonWithIcon
-import com.futuremind.loyaltyrewards.common.ui.components.VerticalSpacer
+import com.futuremind.loyaltyrewards.common.ui.components.*
+import com.futuremind.loyaltyrewards.common.ui.theme.AppColors
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalTypography
+import com.futuremind.loyaltyrewards.common.ui.theme.Palette
 import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
 
 enum class RewardCardMode { ACTIVATED, AVAILABLE, UNAVAILABLE; }
@@ -67,33 +65,47 @@ private fun RewardBottomSection(
     onButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val buttonBackground = when(reward.state) {
-        Reward.State.AVAILABLE -> Color.Red
-        Reward.State.UNAVAILABLE -> Color.Gray
-        Reward.State.ACTIVATED -> Color.Green
+    // TODO: Add remember?
+    val buttonBackground = when (reward.state) {
+        Reward.State.AVAILABLE -> {
+            Brush.verticalGradient(
+                0.0f to Palette.grayDark,
+                1f to Palette.grayDark,
+            )
+        }
+        Reward.State.UNAVAILABLE -> {
+            Brush.verticalGradient(
+                0.0f to Palette.grayLight,
+                1f to Palette.grayLight,
+            )
+        }
+        Reward.State.ACTIVATED -> {
+            AppColors.gradientPrimaryButton
+        }
     }
 
-    val buttonIcon = when(reward.state) {
+    val buttonIcon = when (reward.state) {
         Reward.State.AVAILABLE -> R.drawable.ic_unlock
         Reward.State.UNAVAILABLE -> R.drawable.ic_lock
         Reward.State.ACTIVATED -> R.drawable.ic_check
     }
 
     Column(
-        modifier = modifier then Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = reward.name,
-            style = LocalTypography.current.BodyL // TODO update
+            style = LocalTypography.current.HeaderM // TODO update
         )
-        ButtonWithIcon(
+        VerticalSpacer(height = 8.dp)
+        GradientButtonWithIcon(
             label = getPluralString(id = R.plurals.points, count = reward.pointsCost),
             iconResId = buttonIcon,
             contentDescription = "Reward item",
             onClick = { onButtonClick() },
-            modifier = Modifier.background(buttonBackground)
+            buttonBackground = buttonBackground
         )
     }
 }

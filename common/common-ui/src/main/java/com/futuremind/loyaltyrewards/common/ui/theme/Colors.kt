@@ -24,6 +24,8 @@ object AppColors {
 
 object Palette {
     val black = Color(0xFF2F2D2B)
+    val grayDark = Color(0xFF2F2D2B)
+    val grayLight = Color(0xFF8D8D8D)
     val white = Color(0xFFFFFFFF)
     val silver = Color(0xFFE8ECF8)
     val alabaster = Color(0xFFF4F5F9)
