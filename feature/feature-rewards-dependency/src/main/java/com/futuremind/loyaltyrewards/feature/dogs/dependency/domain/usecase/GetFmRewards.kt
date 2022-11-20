@@ -1,4 +1,4 @@
-package com.futuremind.loyaltyrewards.feature.dogs.dependency.domain
+package com.futuremind.loyaltyrewards.feature.dogs.dependency.domain.usecase
 
 import com.futuremind.loyaltyrewards.api.RewardsApi
 import com.futuremind.loyaltyrewards.common.util.coroutines.DispatcherProvider
