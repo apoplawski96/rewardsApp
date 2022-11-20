@@ -42,8 +42,6 @@ fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
     val errorMessage = stringResource(id = R.string.something_went_wrong)
     val notEnoughPointsMessage = stringResource(id = R.string.not_enough_points)
 
-    println("2137 - isRefreshing: $isRefreshing")
-
     LaunchedEffect(null) {
         viewModel.initialize()
         viewModel.viewEvent.collect { event ->
@@ -64,7 +62,6 @@ fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
         errorSnackbarState = errorSnackbarState,
         isRefreshing = isRefreshing,
         onRefresh = {
-            println("2137 - refresh")
             viewModel.refresh()
         },
         onRewardClick = { reward ->

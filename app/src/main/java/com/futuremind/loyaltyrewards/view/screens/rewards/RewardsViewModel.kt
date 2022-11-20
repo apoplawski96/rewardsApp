@@ -23,7 +23,6 @@ class RewardsViewModel(
     private val getRewards: GetRewards,
     private val getUserPoints: GetUserPoints,
     private val switchRewardActivationStatus: SwitchRewardActivationStatus,
-    private val dispatcherProvider: DispatcherProvider,
 ) : ViewModel() {
 
     sealed interface ViewState {
@@ -68,9 +67,15 @@ class RewardsViewModel(
             }
 
             _isProcessing.update { true }
-            switchRewardActivationStatus(reward = reward)
 
-            fetchDataFromApi(initialization = false)
+            when(switchRewardActivationStatus(reward = reward)) {
+                SwitchRewardActivationStatus.Result.Success -> {
+                    fetchDataFromApi(initialization = false)
+                }
+                SwitchRewardActivationStatus.Result.Failure -> {
+                    _viewEvent.send(ViewEvent.Error)
+                }
+            }
 
             _isProcessing.update { false }
             _isRefreshing.update { false }
