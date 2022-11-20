@@ -69,14 +69,14 @@ fun ButtonLarge(
 fun GradientButtonWithIcon(
     label: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
     @DrawableRes iconResId: Int,
     contentDescription: String?,
     buttonBackground: Brush,
+    modifier: Modifier = Modifier,
     isProcessing: Boolean = true,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier then Modifier
             .height(46.dp)
             .wrapContentWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)

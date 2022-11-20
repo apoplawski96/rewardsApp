@@ -2,7 +2,6 @@ package com.futuremind.loyaltyrewards.view.screens.rewards
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.futuremind.loyaltyrewards.common.ui.model.LoadingState
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetRewards
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetUserPoints
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.SwitchRewardActivationStatus
@@ -25,7 +24,7 @@ class RewardsViewModel(
 
     sealed interface ViewState {
         object InitializationError : ViewState
-        object Loading : ViewState, LoadingState
+        object Loading : ViewState
         data class DataLoaded(
             val rewards: List<Reward>,
             val points: Int,

@@ -37,10 +37,6 @@ data class AppTypography(
     val BodyM: TextStyle = TextStyle(
         fontSize = 12.sp
     ),
-//    val BodyLBold: TextStyle = TextStyle(
-//        fontSize = 16.sp,
-//        fontWeight = FontWeight(700)
-//    )
 )
 
 val LocalTypography = compositionLocalOf { AppTypography() }
