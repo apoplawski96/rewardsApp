@@ -6,19 +6,15 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
-import com.futuremind.loyaltyrewards.view.screens.rewards.RewardsLayout
 import com.futuremind.loyaltyrewards.common.ui.theme.AppTheme
+import com.futuremind.loyaltyrewards.view.screens.rewards.RewardsScreen
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-
-
 
 class MainActivityCompose : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-
 
         setContent {
             val systemUiController = rememberSystemUiController()
@@ -28,13 +24,10 @@ class MainActivityCompose : ComponentActivity() {
                     darkIcons = true
                 )
             }
-
-//            val rewards = RewardsApi()
             AppTheme {
-                RewardsLayout()
+                RewardsScreen()
             }
         }
     }
-
 }
 

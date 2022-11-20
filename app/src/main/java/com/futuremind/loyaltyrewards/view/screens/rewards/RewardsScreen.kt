@@ -1,13 +1,10 @@
 package com.futuremind.loyaltyrewards.view.screens.rewards
 
 import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,7 +15,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.futuremind.loyaltyrewards.R
 import com.futuremind.loyaltyrewards.common.ui.components.*
-import com.futuremind.loyaltyrewards.common.ui.model.LoadingState
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalColors
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalTypography
 import com.futuremind.loyaltyrewards.common.util.extension.executeIfNotCurrentlyProcessing
@@ -32,7 +28,7 @@ import org.koin.androidx.compose.getViewModel
 
 
 @Composable
-fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
+fun RewardsScreen(viewModel: RewardsViewModel = getViewModel()) {
 
     val errorSnackbarState = remember { SnackbarHostState() }
 
@@ -57,7 +53,7 @@ fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
         }
     }
 
-    RewardsLayoutContent(
+    RewardsScreenContent(
         viewState = viewState,
         errorSnackbarState = errorSnackbarState,
         isProcessing = isProcessing,
@@ -77,7 +73,7 @@ fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
 }
 
 @Composable
-private fun RewardsLayoutContent(
+private fun RewardsScreenContent(
     viewState: RewardsViewModel.ViewState,
     errorSnackbarState: SnackbarHostState,
     onRefresh: () -> Unit,
@@ -90,69 +86,28 @@ private fun RewardsLayoutContent(
 
     Box {
         Column {
-            TopBar(
-                title = stringResource(R.string.rewards),
-                onBack = { /* not part of task */ }
-            )
+            TopBar(title = stringResource(R.string.rewards), onBack = { /* not part of task */ })
             SwipeRefresh(
                 state = rememberSwipeRefreshState(isRefreshing = isRefreshing),
                 onRefresh = onRefresh,
             ) {
                 when (viewState) {
                     is RewardsViewModel.ViewState.DataLoaded -> {
-                        Box {
-                            Column(
-                                modifier = Modifier
-                                    .navigationBarsPadding()
-                                    .background(LocalColors.current.gradientLight)
-                                    .fillMaxSize()
-                                    .verticalScroll(scrollState)
-                            ) {
-                                Spacer(modifier = Modifier.height(24.dp))
-                                GreetingRow("FM Candidate") //not part of task
-                                Spacer(modifier = Modifier.height(24.dp))
-                                PointsSection(points = viewState.points)
-                                Spacer(modifier = Modifier.height(24.dp))
-                                RewardsSection(
-                                    rewards = viewState.rewards,
-                                    onRewardClick = onRewardClick,
-                                    clickActive = !isProcessing
-                                )
-                                Spacer(modifier = Modifier.height(24.dp))
-                                ShareCard()
-                            }
-                            if (isProcessing) CircularProgressIndicator(
-                                modifier = Modifier.align(
-                                    Alignment.Center
-                                )
-                            )
-                        }
+                        RewardsLayout(
+                            viewState = viewState,
+                            scrollState = scrollState,
+                            onRewardClick = onRewardClick,
+                            isProcessing = isProcessing,
+                        )
                     }
                     is RewardsViewModel.ViewState.Loading -> {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                        }
+                        LoadingLayout()
                     }
                     RewardsViewModel.ViewState.InitializationError -> {
-                        Box {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .verticalScroll(scrollState),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center,
-
-                                ) {
-                                Text(
-                                    text = stringResource(id = R.string.something_went_wrong),
-                                    style = LocalTypography.current.BodyL,
-                                )
-                                VerticalSpacer(height = 16.dp)
-                                Button(onClick = onRetryInitialize) {
-                                    Text(text = stringResource(id = R.string.retry))
-                                }
-                            }
-                        }
+                        InitializationErrorLayout(
+                            scrollState = scrollState,
+                            onRetryInitialize = onRetryInitialize
+                        )
                     }
                 }
             }
@@ -164,6 +119,40 @@ private fun RewardsLayoutContent(
                 .systemBarsPadding()
                 .padding(bottom = 48.dp)
         )
+    }
+}
+
+@Composable
+private fun RewardsLayout(
+    viewState: RewardsViewModel.ViewState.DataLoaded,
+    scrollState: ScrollState,
+    onRewardClick: (Reward) -> Unit,
+    isProcessing: Boolean
+) {
+    Box {
+        Column(
+            modifier = Modifier
+                .navigationBarsPadding()
+                .background(LocalColors.current.gradientLight)
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
+            Spacer(modifier = Modifier.height(24.dp))
+            GreetingRow("FM Candidate") //not part of task
+            Spacer(modifier = Modifier.height(24.dp))
+            PointsSection(points = viewState.points)
+            Spacer(modifier = Modifier.height(24.dp))
+            RewardsSection(
+                rewards = viewState.rewards,
+                onRewardClick = onRewardClick,
+                clickActive = !isProcessing
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            ShareCard()
+        }
+        if (isProcessing) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        }
     }
 }
 
@@ -204,10 +193,8 @@ private fun GreetingRow(userName: String) {
                 style = LocalTypography.current.BodyL
             )
         }
-        IconButtonSmall(
-            iconPainter = painterResource(R.drawable.ic_card),
-            onClick = { /* not part of task */ }
-        )
+        IconButtonSmall(iconPainter = painterResource(R.drawable.ic_card),
+            onClick = { /* not part of task */ })
     }
 }
 
@@ -236,8 +223,7 @@ private fun PointsSection(
                 )
                 Spacer(Modifier.width(4.dp))
                 Text(
-                    text = stringResource(R.string.points),
-                    style = LocalTypography.current.HeaderL
+                    text = stringResource(R.string.points), style = LocalTypography.current.HeaderL
                 )
             }
             Text(text = stringResource(R.string.redeem_points_subtitle))
@@ -264,6 +250,36 @@ private fun ShareCard() {
                 onClick = { /* not part of task */ },
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+    }
+}
+
+@Composable
+private fun LoadingLayout() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+    }
+}
+
+@Composable
+private fun InitializationErrorLayout(
+    scrollState: ScrollState,
+    onRetryInitialize: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text(
+            text = stringResource(id = R.string.something_went_wrong),
+            style = LocalTypography.current.BodyL,
+        )
+        VerticalSpacer(height = 16.dp)
+        Button(onClick = onRetryInitialize) {
+            Text(text = stringResource(id = R.string.retry))
         }
     }
 }
