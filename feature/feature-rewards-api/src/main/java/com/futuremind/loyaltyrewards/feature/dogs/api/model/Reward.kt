@@ -5,5 +5,7 @@ data class Reward(
     val name: String,
     val coverUrl: String,
     val pointsCost: Int,
-    val activated: Boolean,
-)
+    val state: State,
+) {
+    enum class State { AVAILABLE, UNAVAILABLE, ACTIVATED; }
+}

@@ -8,8 +8,6 @@ internal class GetFmRewardsActivationStatus(
 ) : GetRewardsActivationStatus {
 
     override suspend fun get() {
-        println("2137 - KURRŁA")
         val result = rewardsApi.getRewardsActivationStatus()
-        println("2137 - KURRŁA 2 activations result: $result")
     }
 }

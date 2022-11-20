@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.futuremind.loyaltyrewards.R
 import com.futuremind.loyaltyrewards.common.ui.components.*
+import com.futuremind.loyaltyrewards.common.ui.model.LoadingState
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalColors
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalTypography
 import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
@@ -34,11 +35,10 @@ fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
 
     val errorSnackbarState = remember { SnackbarHostState() }
 
-
     LaunchedEffect(null) {
         viewModel.initialize()
         viewModel.viewEvent.collect { event ->
-            when(event) {
+            when (event) {
                 RewardsViewModel.ViewEvent.Error -> {
                     errorSnackbarState.showSnackbar("error kurwa")
                 }
@@ -49,11 +49,16 @@ fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
     val viewState by viewModel.viewState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
+
     RewardsLayoutContent(
         onRefresh = { viewModel.refresh() },
         viewState = viewState,
         isLoading = isLoading,
-        onRewardClick = { reward -> viewModel.onRewardClick(reward) },
+        onRewardClick = { reward ->
+            executeIfNotCurrentlyProcessing(state = viewState) {
+                viewModel.onRewardClick(reward)
+            }
+        },
         errorSnackbarState = errorSnackbarState,
     )
 }
@@ -82,6 +87,8 @@ private fun RewardsLayoutContent(
             ) {
                 when (viewState) {
                     is RewardsViewModel.ViewState.DataLoaded -> {
+                        println("2137 - VIEW STATE: ${viewState.rewards}")
+
                         Column {
                             Column(
                                 modifier = Modifier
@@ -95,7 +102,10 @@ private fun RewardsLayoutContent(
                                 Spacer(modifier = Modifier.height(24.dp))
                                 PointsSection(points = viewState.points)
                                 Spacer(modifier = Modifier.height(24.dp))
-                                RewardsSection(rewards = viewState.rewards, onRewardClick = onRewardClick)
+                                RewardsSection(
+                                    rewards = viewState.rewards,
+                                    onRewardClick = onRewardClick
+                                )
                                 Spacer(modifier = Modifier.height(24.dp))
                                 ShareCard()
                             }
@@ -111,6 +121,13 @@ private fun RewardsLayoutContent(
 //                            Text(text = "Retry")
 //                        }
 //                    }
+                    RewardsViewModel.ViewState.InitializationError -> {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            Button(onClick = { onRefresh() }, modifier = Modifier.align(Alignment.Center)) {
+                                Text(text = "Retry")
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -119,6 +136,7 @@ private fun RewardsLayoutContent(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .systemBarsPadding()
+                .padding(bottom = 48.dp)
         )
     }
 
@@ -224,5 +242,14 @@ fun ShareCard() {
                 modifier = Modifier.fillMaxWidth()
             )
         }
+    }
+}
+
+private fun executeIfNotCurrentlyProcessing(
+    state: RewardsViewModel.ViewState,
+    block: () -> Unit
+) {
+    if (state !is LoadingState) {
+        block()
     }
 }

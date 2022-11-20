@@ -14,19 +14,17 @@ internal class GetFmRewards(
     override suspend fun invoke(): GetRewards.Result = try {
         // TODO: Make async
         val rewards = rewardsApi.getRewards()
-        val rewardsActivationStatus: List<ApiRewardActivationStatus> = listOf()
-//            rewardsApi.getRewardsActivationStatus()
+        val rewardsActivationStatus: List<ApiRewardActivationStatus> = rewardsApi.getRewardsActivationStatus()
+        val userPoints = rewardsApi.getPoints()
+//
         val result = apiRewardsConverter.convert(
             apiRewards = rewards,
-            activationStatus = rewardsActivationStatus
+            activationStatus = rewardsActivationStatus,
+            userPoints = userPoints.points
         )
-
-//        val statuses = rewardsApi.getRewardsActivationStatus()
-//        println("2137, statuses: $statuses")
 
         GetRewards.Result.Success(items = result)
     } catch (e: Exception) {
-        println("2137 - exception HERE: $e")
         GetRewards.Result.Failure
     }
 }

@@ -2,6 +2,7 @@ package com.futuremind.loyaltyrewards.view.screens.rewards
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.futuremind.loyaltyrewards.common.ui.model.LoadingState
 import com.futuremind.loyaltyrewards.common.util.coroutines.DispatcherProvider
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetRewards
 import com.futuremind.loyaltyrewards.feature.dogs.api.domain.GetRewardsActivationStatus
@@ -17,6 +18,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
+
+
 class RewardsViewModel(
     private val getRewards: GetRewards,
     private val getUserPoints: GetUserPoints,
@@ -26,7 +29,8 @@ class RewardsViewModel(
 ) : ViewModel() {
 
     sealed interface ViewState {
-        object Loading : ViewState
+        object InitializationError : ViewState
+        object Loading : ViewState, LoadingState
         data class DataLoaded(
             val rewards: List<Reward>,
             val points: Int,
@@ -47,24 +51,27 @@ class RewardsViewModel(
     val isLoading = _isLoading.asStateFlow()
 
     fun initialize() {
-        fetchDataFromApi()
+        fetchDataFromApi(initialization = true)
     }
 
     fun onRewardClick(reward: Reward) {
         viewModelScope.launch {
+            _isLoading.update { true }
             setRewardActivationStatus(id = reward.id)
 
-            fetchDataFromApi()
-            getRewardsActivationStatus.get()
+            fetchDataFromApi(initialization = false)
+            _isLoading.update { false }
         }
     }
 
     fun refresh() {
-        fetchDataFromApi()
+        fetchDataFromApi(initialization = false)
     }
 
-    private fun fetchDataFromApi() {
+    private fun fetchDataFromApi(initialization: Boolean) {
         viewModelScope.launch {
+            _isLoading.update { true }
+
             val getRewardsDeferred = async { getRewards() }
             val getUserPointsDeferred = async { getUserPoints() }
 
@@ -72,15 +79,21 @@ class RewardsViewModel(
             val getUserPointsResult = getUserPointsDeferred.await()
 
             if (getRewardsResult is GetRewards.Result.Success && getUserPointsResult is GetUserPoints.Result.Success) {
-                println("2137 - was success ")
                 _viewState.update {
+                    _isLoading.update { false }
                     ViewState.DataLoaded(
                         rewards = getRewardsResult.items,
                         points = getUserPointsResult.points
                     )
                 }
             } else {
-                _viewEvent.send(ViewEvent.Error)
+                _isLoading.update { false }
+
+                if (initialization) {
+                    _viewState.update { ViewState.InitializationError }
+                } else {
+                    _viewEvent.send(ViewEvent.Error)
+                }
             }
         }
     }

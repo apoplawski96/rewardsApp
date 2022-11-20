@@ -9,14 +9,31 @@ internal class ApiRewardsConverter {
     fun convert(
         apiRewards: List<ApiReward>,
         activationStatus: List<ApiRewardActivationStatus>,
+        userPoints: Int,
     ): List<Reward> = apiRewards.map { apiReward ->
         Reward(
             id = apiReward.id,
             name = apiReward.name,
             coverUrl = apiReward.coverUrl,
             pointsCost = apiReward.pointsCost,
-            activated = false
+            state = apiReward.getState(
+                activationsStatus = activationStatus,
+                userPoints = userPoints,
+            )
         )
+    }
+
+    private fun ApiReward.getState(
+        activationsStatus: List<ApiRewardActivationStatus>,
+        userPoints: Int,
+    ): Reward.State {
+        if (this.isActivated(activationsStatus)) return Reward.State.ACTIVATED
+
+        return if (this.pointsCost <= userPoints) {
+            Reward.State.AVAILABLE
+        } else {
+            Reward.State.UNAVAILABLE
+        }
     }
 
     private fun ApiReward.isActivated(activationsStatus: List<ApiRewardActivationStatus>): Boolean {
