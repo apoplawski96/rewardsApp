@@ -26,8 +26,8 @@ import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
 @Composable
 fun RewardCard(
     reward: Reward,
-    onRewardClick: () -> Unit,
     clickActive: Boolean,
+    onRewardClick: () -> Unit,
 ) {
     Card(
         shape = RoundedCornerShape(size = 8.dp),
@@ -77,7 +77,6 @@ private fun RewardBottomSection(
     buttonActive: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    // TODO: Add remember?
     val buttonBackground = when (reward.state) {
         Reward.State.AVAILABLE -> {
             Brush.verticalGradient(
@@ -108,13 +107,13 @@ private fun RewardBottomSection(
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier then Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = reward.name,
-            style = LocalTypography.current.HeaderM, // TODO update,
+            style = LocalTypography.current.HeaderM,
             color = textColor
         )
         VerticalSpacer(height = 8.dp)

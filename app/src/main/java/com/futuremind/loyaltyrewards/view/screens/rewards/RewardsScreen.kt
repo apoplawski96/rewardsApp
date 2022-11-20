@@ -86,7 +86,10 @@ private fun RewardsScreenContent(
 
     Box {
         Column {
-            TopBar(title = stringResource(R.string.rewards), onBack = { /* not part of task */ })
+            TopBar(
+                title = stringResource(R.string.rewards),
+                onBack = { /* not part of task */ }
+            )
             SwipeRefresh(
                 state = rememberSwipeRefreshState(isRefreshing = isRefreshing),
                 onRefresh = onRefresh,
@@ -100,14 +103,14 @@ private fun RewardsScreenContent(
                             isProcessing = isProcessing,
                         )
                     }
-                    is RewardsViewModel.ViewState.Loading -> {
-                        LoadingLayout()
-                    }
-                    RewardsViewModel.ViewState.InitializationError -> {
+                    is RewardsViewModel.ViewState.InitializationError -> {
                         InitializationErrorLayout(
                             scrollState = scrollState,
                             onRetryInitialize = onRetryInitialize
                         )
+                    }
+                    is RewardsViewModel.ViewState.Loading -> {
+                        LoadingLayout()
                     }
                 }
             }
@@ -162,9 +165,7 @@ private fun RewardsSection(
     onRewardClick: (Reward) -> Unit,
     clickActive: Boolean,
 ) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
+    LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         item { HorizontalSpacer(width = 4.dp) }
         items(items = rewards, key = { reward -> reward.id }) { reward ->
             RewardCard(
@@ -267,11 +268,11 @@ private fun InitializationErrorLayout(
     onRetryInitialize: () -> Unit,
 ) {
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
         Text(
             text = stringResource(id = R.string.something_went_wrong),
