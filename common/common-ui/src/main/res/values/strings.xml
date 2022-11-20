@@ -15,4 +15,5 @@
     </plurals>
     <string name="something_went_wrong">"Something went wrong, please try again."</string>
     <string name="not_enough_points">"You don't have enough points!"</string>
+    <string name="retry">Retry</string>
 </resources>

@@ -21,6 +21,7 @@ import com.futuremind.loyaltyrewards.common.ui.components.*
 import com.futuremind.loyaltyrewards.common.ui.model.LoadingState
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalColors
 import com.futuremind.loyaltyrewards.common.ui.theme.LocalTypography
+import com.futuremind.loyaltyrewards.common.util.extension.executeIfNotCurrentlyProcessing
 import com.futuremind.loyaltyrewards.feature.dogs.api.model.Reward
 import com.futuremind.loyaltyrewards.view.screens.rewards.components.RewardCard
 import com.google.accompanist.insets.navigationBarsPadding
@@ -58,8 +59,8 @@ fun RewardsLayout(viewModel: RewardsViewModel = getViewModel()) {
 
     RewardsLayoutContent(
         viewState = viewState,
-        isProcessing = isProcessing,
         errorSnackbarState = errorSnackbarState,
+        isProcessing = isProcessing,
         isRefreshing = isRefreshing,
         onRefresh = {
             viewModel.refresh()
@@ -148,7 +149,7 @@ private fun RewardsLayoutContent(
                                 )
                                 VerticalSpacer(height = 16.dp)
                                 Button(onClick = onRetryInitialize) {
-                                    Text(text = "Retry")
+                                    Text(text = stringResource(id = R.string.retry))
                                 }
                             }
                         }
@@ -166,7 +167,6 @@ private fun RewardsLayoutContent(
     }
 }
 
-// TODO: Add keys
 @Composable
 private fun RewardsSection(
     rewards: List<Reward>,
@@ -177,7 +177,7 @@ private fun RewardsSection(
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item { HorizontalSpacer(width = 4.dp) }
-        items(rewards) { reward ->
+        items(items = rewards, key = { reward -> reward.id }) { reward ->
             RewardCard(
                 reward = reward,
                 onRewardClick = { onRewardClick(reward) },
@@ -215,7 +215,6 @@ private fun GreetingRow(userName: String) {
 private fun PointsSection(
     points: Int?
 ) {
-
     val animatedPoints by animateIntAsState(targetValue = points ?: 0)
     val pointsText = when (points) {
         null -> "-"
@@ -247,7 +246,7 @@ private fun PointsSection(
 }
 
 @Composable
-fun ShareCard() {
+private fun ShareCard() {
     ColoredCard {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
@@ -266,15 +265,5 @@ fun ShareCard() {
                 modifier = Modifier.fillMaxWidth()
             )
         }
-    }
-}
-
-// TODO: check!!
-private fun executeIfNotCurrentlyProcessing(
-    isProcessing: Boolean,
-    block: () -> Unit
-) {
-    if (isProcessing.not()) {
-        block()
     }
 }
