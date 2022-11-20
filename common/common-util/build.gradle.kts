@@ -50,6 +50,9 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
+    "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1")
+    "implementation"("org.junit.jupiter:junit-jupiter-api:5.8.2")
+
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("com.google.android.material:material:1.6.1")

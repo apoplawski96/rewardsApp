@@ -9,4 +9,6 @@ interface DispatcherProvider {
     val io: CoroutineDispatcher
 
     val main: CoroutineDispatcher
+
+    val unconfined: CoroutineDispatcher
 }
