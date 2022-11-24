@@ -1,9 +1,3 @@
-# Future Mind Take-Home Task
-
-This repo contains a simplistic version of a loyalty program app. User collects points through
-purchases and there are several rewards, which he can activate to claim them at the counter.
-Activating a reward decreases his points balance.
-
 ## Task
 
 The user stories to implement are:
